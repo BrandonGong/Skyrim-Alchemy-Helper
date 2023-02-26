@@ -39,15 +39,24 @@ def Graph():
         # potions with 3 ingredients they must be linked by an ingredient with both effects.
         g = Network(height="750px",bgcolor="#222222",font_color="#f2f2f2")
         for effect in _active_effects:
-            g.add_node(effect,color="#cc0000")
+            g.add_node(effect,color="#0d6efd",shape="star")
             ingredients = cb.GetIngredients(effect)
             for ingredient in ingredients:
-                g.add_node(ingredient,color="#0099cc")
+                secondary_effects = cb.GetEffects(ingredient)
+                title = ingredient + "\n" + "\n".join(f"* {e}" for e in secondary_effects)
+                g.add_node(ingredient,color="#0dcaf0",title=title)
                 g.add_edge(effect,ingredient)
 
+                # for e in secondary_effects:
+                #     if e not in _active_effects:
+                #         # add a secondary effect
+                #         g.add_node(e,color="#adb5bd",shape="star")
+                #         g.add_edge(e,ingredient)
+
+        g.force_atlas_2based()
         return g.generate_html()
     else:
-        return "Select an effect to view ingredients"
+        return "Select an effect to view ingredients."
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
