@@ -22,6 +22,8 @@
                     <div class="col-md-2">
                         {% if effect['active'] %}
                             <input class="btn btn-primary" type="submit" name="effect" value="{{effect['name']}}"/>
+                        {% elif not effect['compatible'] %}
+                            <input class="btn btn-secondary" type="submit" name="effect" value="{{effect['name']}}" disabled/>
                         {% else %}
                             <input class="btn" type="submit" name="effect" value="{{effect['name']}}"/>
                         {% endif %}

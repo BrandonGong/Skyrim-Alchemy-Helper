@@ -73,6 +73,9 @@ class Cookbook:
         return list(r[0] for r in cur.fetchall())
     
     def GetEffects(self,ingredient) -> list:
+        '''
+        Gets a list of effects for an ingredient
+        '''
         cur = self.db.cursor()
         cur.execute("""
             SELECT e.name
@@ -83,4 +86,23 @@ class Cookbook:
                 ON e.id = ite.effect_id
             WHERE i.name = ?
                     """,(ingredient,))
+        return list(r[0] for r in cur.fetchall())
+    
+    def GetCompatibleEffects(self,effect) -> list:
+        '''
+        Gets a list of effects that share an ingredient with the
+        provided effect
+        '''
+        cur = self.db.cursor()
+        cur.execute("""
+            SELECT s.name
+            FROM Effects p
+            JOIN IngredientToEffect ite1
+                ON ite1.effect_id = p.id
+            JOIN IngredientToEffect ite2
+                ON ite2.ingredient_id = ite1.ingredient_id
+            JOIN Effects s
+                ON s.id = ite2.effect_id
+            WHERE p.name = ?
+            """,(effect,))
         return list(r[0] for r in cur.fetchall())

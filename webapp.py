@@ -14,6 +14,12 @@ def Home():
         e = {}
         e["name"] = effect
         e["active"] = effect in _active_effects
+        e["compatible"] = True
+        for ae in _active_effects:
+            if effect not in cb.GetCompatibleEffects(ae):
+                e["compatible"] = False
+                break
+
         effects.append(e)
     
     return render_template("index.html", effects=effects, active_effect=_active_effects )
