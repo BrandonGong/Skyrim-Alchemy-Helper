@@ -14,11 +14,11 @@ def home():
         active_effect = ""
         ingredients = cb.AllIngredients()
     else:
-        active_effect = request.form["effect"]
+        active_effect = [request.form["effect"]]
         ingredients = cb.GetIngredients(active_effect)
 
     return render_template("index.html", effects=effects, ingredients=ingredients, active_effect=active_effect )
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

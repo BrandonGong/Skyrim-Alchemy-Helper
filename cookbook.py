@@ -1,6 +1,9 @@
 import sqlite3
 import json
 class Cookbook:
+    '''
+    Alchemist's cookbook for retrieving information on potions and their ingredients
+    '''
     def __init__(self):
         self.db = sqlite3.connect(":memory:",check_same_thread=False)
         
@@ -15,7 +18,8 @@ class Cookbook:
         data = {}
         with open("./data/data.json") as f:
             data = json.load(f)
-
+        
+        # Build SQLite database from data
         ingredient_id = 0
         effect_id = 0
         for ingredient in data:
@@ -32,29 +36,45 @@ class Cookbook:
                 cur.execute("INSERT INTO IngredientToEffect VALUES(?,?)",(ingredient_id,e))
             ingredient_id += 1
         self.db.commit()
+    # end __init__
 
 
     def AllIngredients(self):
+        '''
+        Gets a list of all available ingredients
+        '''
         cur = self.db.cursor()
         cur.execute("SELECT name FROM Ingredients ORDER BY name")
         return (r[0] for r in cur.fetchall())
     
+
     def AllEffects(self):
+        '''
+        Gets a list of all available effects
+        '''
         cur = self.db.cursor()
         cur.execute("SELECT name FROM Effects ORDER BY name")
         return (r[0] for r in cur.fetchall())
     
-    def GetIngredients(self,effect):
-        cur = self.db.cursor()
-        cur.execute("""
+    def GetIngredients(self,effects: list[str]):
+        '''
+        Gets a list of ingredients with the provided effects
+        '''
+        if len(effects) < 1:
+            raise Exception("At least one effect must be provided")
+        
+        sql = """
             SELECT i.name
             FROM Ingredients i
             JOIN IngredientToEffect ite
                 ON ite.ingredient_id = i.id
             JOIN Effects e
                 ON e.id = ite.effect_id
-            WHERE e.name = ?
-                    """,(effect,))
+            WHERE e.name IN (?""" + ",?" * (len(effects)-1) + ")"
+        
+
+        cur = self.db.cursor()
+        cur.execute(sql,effects)
         return (r[0] for r in cur.fetchall())
     
     def GetEffects(self,ingredient):
