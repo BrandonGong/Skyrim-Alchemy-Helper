@@ -37,12 +37,12 @@ def Graph():
         # both ingredients must share an effect.
         # For multiple effects, all effects must be shared between two ingredients, or for
         # potions with 3 ingredients they must be linked by an ingredient with both effects.
-        g = Network(height="750px")
+        g = Network(height="750px",bgcolor="#222222",font_color="#f2f2f2")
         for effect in _active_effects:
             g.add_node(effect,color="#cc0000")
             ingredients = cb.GetIngredients(effect)
             for ingredient in ingredients:
-                g.add_node(ingredient,color="#009933")
+                g.add_node(ingredient,color="#0099cc")
                 g.add_edge(effect,ingredient)
 
         return g.generate_html()

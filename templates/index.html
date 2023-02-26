@@ -15,11 +15,6 @@
             <div class="col">
                 <h1>Effects</h1>
             </div>
-            <div class="col">
-                <form method="post" name="reset" action="Clear">
-                    <input class="btn btn-info" type="submit" value="Reset">
-                </form>
-            </div>
         </div>
         <form method="post" name="effect_selection" action="AddEffect">
             <div class="row">
@@ -34,9 +29,19 @@
                 {% endfor %}
             </div>
         </form>
+        <br>
+        <div class="row">
+            <div class="col-10">
+                <h1>Ingredients</h1>
+            </div>
+            <div class="col-2">
+                <form method="post" name="reset" action="Clear">
+                    <input class="btn btn-info" type="submit" value="Reset">
+                </form>
+            </div>
+        </div>
     </div>
     <div class="container"  style="height: 10000px">
-        <h1>Ingredients</h1>
         <iframe width="100%" height="100%" src="./Graph"></iframe>
     </div>
 </body>
