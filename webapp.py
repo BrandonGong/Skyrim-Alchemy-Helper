@@ -4,7 +4,6 @@ from cookbook import Cookbook
 from pyvis.network import Network
 
 app = Flask(__name__)
-app.secret_key = secrets.token_hex()
 cb =  Cookbook()
 
 
@@ -82,4 +81,5 @@ def _GetActiveEffects():
         return []
 
 if __name__ == "__main__":
+    app.secret_key = secrets.token_hex()
     app.run()
