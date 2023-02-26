@@ -7,36 +7,44 @@
     <title>Skyrim Alchemy Helper</title>
 
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 </head>
 <body>
-    <div class="container container-fluid">
+    <div class="container">
         <div class="row">
-            <h1>Effects</h1>
+            <div class="col">
+                <h1>Effects</h1>
+            </div>
+            <div class="col">
+                <form method="post" name="reset" action="Clear">
+                    <input class="btn btn-info" type="submit" value="Reset">
+                </form>
+            </div>
+        </div>
+        <form method="post" name="effect_selection" action="AddEffect">
+            <div class="row">
+                {% for effect in effects: %}
+                    <div class="col-md-2">
+                        {% if effect['active'] %}
+                            <input class="btn btn-primary" type="submit" name="effect" value="{{effect['name']}}"/>
+                        {% else %}
+                            <input class="btn" type="submit" name="effect" value="{{effect['name']}}"/>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </form>
+        <div class="row">
+            <h1>Ingredients</h1>
         </div>
         <div class="row">
-            <form method="post" name="effect_selection">
-            {% for effect in effects: %}
-                <div class="col-md-2">
-                    <input class="btn btn-default" type="submit" name="effect" value="{{effect}}"/>
-                </div>
+        {% if ingredients != None %}
+            {% for ingredient in ingredients: %}
+                <div class="col-md-1">{{ingredient}}</div> 
             {% endfor %}
-            </form>
-        </div>
-    </div>
-    <br>
-    <div class="container container-fluid">
-        <div class="row">
-            {% if active_effect %}
-                <h1>{{active_effect}}</h1>
-            {% else %}
-                <h1>Ingredients</h1>
-            {% endif %}
-        </div>
-        <div class="row">
-        {% for ingredient in ingredients: %}
-           <div class="col-md-1">{{ingredient}}</div> 
-        {% endfor %}
+        {% else %}
+            <div class="col">Select and effect to view ingredients.</div> 
+        {% endif %}
         </div>
     </div>
 </body>

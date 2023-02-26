@@ -39,45 +39,51 @@ class Cookbook:
     # end __init__
 
 
-    def AllIngredients(self):
+    def AllIngredients(self) -> list:
         '''
         Gets a list of all available ingredients
         '''
         cur = self.db.cursor()
         cur.execute("SELECT name FROM Ingredients ORDER BY name")
-        return (r[0] for r in cur.fetchall())
+        return list(r[0] for r in cur.fetchall())
     
 
-    def AllEffects(self):
+    def AllEffects(self) -> list:
         '''
         Gets a list of all available effects
         '''
         cur = self.db.cursor()
         cur.execute("SELECT name FROM Effects ORDER BY name")
-        return (r[0] for r in cur.fetchall())
+        return list(r[0] for r in cur.fetchall())
     
-    def GetIngredients(self,effects: list[str]):
+    def GetIngredients(self,effects: list[str]) -> list:
         '''
         Gets a list of ingredients with the provided effects
         '''
         if len(effects) < 1:
             raise Exception("At least one effect must be provided")
-        
-        sql = """
+        # Max ingredients per potion is 3
+        # For potions with only 2 ingredients to have an effect
+        # both ingredients must share an effect.
+        # For multiple effects, all effects must be shared between two ingredients, or for
+        # potions with 3 ingredients they must be linked by an ingredient with both effects.
+        select_sql = """
             SELECT i.name
             FROM Ingredients i
             JOIN IngredientToEffect ite
                 ON ite.ingredient_id = i.id
             JOIN Effects e
                 ON e.id = ite.effect_id
-            WHERE e.name IN (?""" + ",?" * (len(effects)-1) + ")"
-        
+            WHERE e.name = ?
+            """
+        #TODO: Fix this logic. Intersection does not work with multiple effects when joined by a 3rd ingredient
+        sql = select_sql + ("INTERSECT " + select_sql) * (len(effects)-1)
 
         cur = self.db.cursor()
         cur.execute(sql,effects)
-        return (r[0] for r in cur.fetchall())
+        return list(r[0] for r in cur.fetchall())
     
-    def GetEffects(self,ingredient):
+    def GetEffects(self,ingredient) -> list:
         cur = self.db.cursor()
         cur.execute("""
             SELECT e.name
@@ -88,4 +94,4 @@ class Cookbook:
                 ON e.id = ite.effect_id
             WHERE i.name = ?
                     """,(ingredient,))
-        return (r[0] for r in cur.fetchall())
+        return list(r[0] for r in cur.fetchall())
