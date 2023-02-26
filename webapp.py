@@ -1,10 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for
 from cookbook import Cookbook
+from pyvis.network import Network
 
 app = Flask(__name__)
 cb =  Cookbook()
 
-active_effects = []
+_active_effects = []
 
 @app.route('/')
 def Home():
@@ -12,26 +13,41 @@ def Home():
     for effect in cb.AllEffects():
         e = {}
         e["name"] = effect
-        e["active"] = effect in active_effects
+        e["active"] = effect in _active_effects
         effects.append(e)
     
-    if len(active_effects) == 0:
-        ingredients = None
-    else:
-        ingredients = cb.GetIngredients(active_effects)
-
-    return render_template("index.html", effects=effects, ingredients=ingredients, active_effect=active_effects )
+    return render_template("index.html", effects=effects, active_effect=_active_effects )
 
 @app.route('/AddEffect',methods=['POST'])
 def AddEffect():
-    active_effects.append(request.form["effect"])
+    _active_effects.append(request.form["effect"])
     return redirect('/')
 
 
 @app.route("/Clear",methods=["POST"])
 def Clear():
-    active_effects.clear()
+    _active_effects.clear()
     return redirect('/')
+
+@app.route("/Graph")
+def Graph():
+    if len(_active_effects) > 0:
+        # Max ingredients per potion is 3
+        # For potions with only 2 ingredients to have an effect
+        # both ingredients must share an effect.
+        # For multiple effects, all effects must be shared between two ingredients, or for
+        # potions with 3 ingredients they must be linked by an ingredient with both effects.
+        g = Network(height="750px")
+        for effect in _active_effects:
+            g.add_node(effect,color="#cc0000")
+            ingredients = cb.GetIngredients(effect)
+            for ingredient in ingredients:
+                g.add_node(ingredient,color="#009933")
+                g.add_edge(effect,ingredient)
+
+        return g.generate_html()
+    else:
+        return "Select an effect to view ingredients"
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -56,18 +56,12 @@ class Cookbook:
         cur.execute("SELECT name FROM Effects ORDER BY name")
         return list(r[0] for r in cur.fetchall())
     
-    def GetIngredients(self,effects: list[str]) -> list:
+    def GetIngredients(self,effect: str) -> list:
         '''
-        Gets a list of ingredients with the provided effects
+        Gets a list of ingredients with the provided effect
         '''
-        if len(effects) < 1:
-            raise Exception("At least one effect must be provided")
-        # Max ingredients per potion is 3
-        # For potions with only 2 ingredients to have an effect
-        # both ingredients must share an effect.
-        # For multiple effects, all effects must be shared between two ingredients, or for
-        # potions with 3 ingredients they must be linked by an ingredient with both effects.
-        select_sql = """
+        cur = self.db.cursor()
+        cur.execute("""
             SELECT i.name
             FROM Ingredients i
             JOIN IngredientToEffect ite
@@ -75,12 +69,7 @@ class Cookbook:
             JOIN Effects e
                 ON e.id = ite.effect_id
             WHERE e.name = ?
-            """
-        #TODO: Fix this logic. Intersection does not work with multiple effects when joined by a 3rd ingredient
-        sql = select_sql + ("INTERSECT " + select_sql) * (len(effects)-1)
-
-        cur = self.db.cursor()
-        cur.execute(sql,effects)
+            """,(effect,))
         return list(r[0] for r in cur.fetchall())
     
     def GetEffects(self,ingredient) -> list:

@@ -34,18 +34,10 @@
                 {% endfor %}
             </div>
         </form>
-        <div class="row">
-            <h1>Ingredients</h1>
-        </div>
-        <div class="row">
-        {% if ingredients != None %}
-            {% for ingredient in ingredients: %}
-                <div class="col-md-1">{{ingredient}}</div> 
-            {% endfor %}
-        {% else %}
-            <div class="col">Select and effect to view ingredients.</div> 
-        {% endif %}
-        </div>
+    </div>
+    <div class="container"  style="height: 10000px">
+        <h1>Ingredients</h1>
+        <iframe width="100%" height="100%" src="./Graph"></iframe>
     </div>
 </body>
 </html>
