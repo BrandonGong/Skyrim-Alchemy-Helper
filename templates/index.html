@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skyrim Alchemy Helper</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container container-fluid">
+        <div class="row">
+            <h1>Effects</h1>
+        </div>
+        <div class="row">
+            <form method="post" name="effect_selection">
+            {% for effect in effects: %}
+                <div class="col-md-2">
+                    <input class="btn btn-default" type="submit" name="effect" value="{{effect}}"/>
+                </div>
+            {% endfor %}
+            </form>
+        </div>
+    </div>
+    <br>
+    <div class="container container-fluid">
+        <div class="row">
+            {% if active_effect %}
+                <h1>{{active_effect}}</h1>
+            {% else %}
+                <h1>Ingredients</h1>
+            {% endif %}
+        </div>
+        <div class="row">
+        {% for ingredient in ingredients: %}
+           <div class="col-md-1">{{ingredient}}</div> 
+        {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

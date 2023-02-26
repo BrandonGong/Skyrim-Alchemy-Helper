@@ -2,18 +2,18 @@ import sqlite3
 import json
 class Cookbook:
     def __init__(self):
-        self.db = sqlite3.connect(":memory:")
+        self.db = sqlite3.connect(":memory:",check_same_thread=False)
         
         # Create data structures
         cur = self.db.cursor()
         cur.execute("CREATE TABLE Ingredients(id INT, name TEXT)")
         cur.execute("CREATE TABLE Effects(id INT, name TEXT)")
-        cur.execute("CREATE TABLE IngredientToEffect(ingredientId INT, effectId INT)")
+        cur.execute("CREATE TABLE IngredientToEffect(ingredient_id INT, effect_id INT)")
 
 
         # Load data from JSON file
         data = {}
-        with open("./Data/data.json") as f:
+        with open("./data/data.json") as f:
             data = json.load(f)
 
         ingredient_id = 0
@@ -31,16 +31,17 @@ class Cookbook:
                     e = res[0]
                 cur.execute("INSERT INTO IngredientToEffect VALUES(?,?)",(ingredient_id,e))
             ingredient_id += 1
+        self.db.commit()
 
 
     def AllIngredients(self):
         cur = self.db.cursor()
-        cur.execute("SELECT name FROM Ingredients")
+        cur.execute("SELECT name FROM Ingredients ORDER BY name")
         return (r[0] for r in cur.fetchall())
     
     def AllEffects(self):
         cur = self.db.cursor()
-        cur.execute("SELECT name FROM Effects")
+        cur.execute("SELECT name FROM Effects ORDER BY name")
         return (r[0] for r in cur.fetchall())
     
     def GetIngredients(self,effect):
