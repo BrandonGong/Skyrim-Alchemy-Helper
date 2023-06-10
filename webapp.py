@@ -71,7 +71,7 @@ def Graph():
         g.force_atlas_2based()
         return g.generate_html()
     else:
-        return "Select an effect to view ingredients."
+        return "<p style='color: white'>Select an effect to view ingredients.</p>"
 
 
 def _GetActiveEffects():
