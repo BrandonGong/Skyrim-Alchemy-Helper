@@ -82,4 +82,4 @@ def _GetActiveEffects():
 
 if __name__ == "__main__":
     app.secret_key = secrets.token_hex()
-    app.run()
+    app.run(host='0.0.0.0',port=5000)
